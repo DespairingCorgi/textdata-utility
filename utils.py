@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def open_data(input, cols):
     if isinstance(input, str):
         extension = input.split('.')[-1]
@@ -24,4 +23,12 @@ def save_data(df, path):
     elif extension == 'csv':
         df.to_csv(path, index=False)
     else:
-        raise Exception("the extesion must be json or csv")
+        raise Exception("Invaid extension: the extesion must be json or csv")
+
+def concat_df(dataframes, **kwargs):
+    order = kwargs["order"] if "order" in kwargs.keys() else None
+    df = pd.concat(dataframes, axis=1)
+    if order == None:
+        return df
+    else:
+        return df.reindex(columns=order)
