@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def open_data(input, cols):
     if isinstance(input, str):
@@ -31,4 +32,24 @@ def concat_df(dataframes, **kwargs):
     if order == None:
         return df
     else:
-        return df.reindex(columns=order)
+        return df[order]
+
+def to_index_label(df, label_col, index_label_col=None, reference_dictionary=None, rm_nan = True):
+    
+    index_col_name = f"{label_col}_idx" if index_label_col == None else index_label_col
+    if rm_nan:
+        df = df.dropna(subset=[label_col])
+    index_dict = { k:i for i, k in enumerate(df[label_col].unique()) } if reference_dictionary == None else reference_dictionary
+
+    print(index_dict)  
+    
+    def l2i(t):
+        if pd.isna(t):
+            return index_dict["nan"]
+        else:
+            return index_dict[t]
+    
+    df[index_col_name] = df[label_col].apply(lambda x: l2i(x))
+    
+    return df    
+    
